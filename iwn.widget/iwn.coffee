@@ -4,7 +4,7 @@
 apiKey: ''
 
 # degree units; 'c' for celsius, 'f' for fahrenheit
-unit: 'c'
+unit: 'f'
 
 # refresh every x minutes
 refreshFrequency: '5min'
@@ -40,12 +40,8 @@ afterRender: (domEl) ->
 	if @apiKey.length != 32
 		domEl.innerHTML = '<a href="https://openweathermap.org/appid" style="color: red">You need an API key!</a>'
 		return
-	geolocation.getCurrentPosition (e) =>
-		coords     = e.position.coords
-		[lat, lon] = [coords.latitude, coords.longitude]
-		@command   = @makeCommand(@apiKey, "#{lat}", "#{lon}", @language)
-
-		@refresh()
+	@command   = @makeCommand(@apiKey, "", "", @language)
+	@refresh()
 
 update: (o, dom) ->
 	data = JSON.parse(o)
@@ -55,9 +51,9 @@ update: (o, dom) ->
 	c = data.weather[0].description
 
 	if @unit == 'f'
-		$(dom).find('#temp').html(Math.round((t - 273.15) * 9 / 5 + 32) + ' °F')
+		$(dom).find('#temp').html(Math.round((t - 273.15) * 9 / 5 + 32) + '°F')
 	else
-		$(dom).find('#temp').html(Math.round(t - 273.15) + ' °C')
+		$(dom).find('#temp').html(Math.round(t - 273.15) + '°C')
 
 	$(dom).find('#condition').html(c)
 	$(dom).find('#icon')[0].innerHTML = @getIcon(data.weather[0])
@@ -67,15 +63,15 @@ update: (o, dom) ->
 
 style: """
 	width 25%
-	bottom 1.5em
-	left 1%
-	font-family Avenir Next LT Pro, Futura
+	top 90%
+	left 85%
+	font-family Hack Nerd Font, Avenir Next LT Pro, Futura
 	font-smooth always
-	color rgba(255,255,255,0.4)
+	color #ebdbb2cc
 
 	@font-face
 		font-family Weather
-		src url(iwn.widget/icons.svg) format('svg')
+		src url(iwn-widget/iwn.widget/icons.svg) format('svg')
 	#left
 		padding-left 80px
 	#temp
@@ -87,7 +83,8 @@ style: """
 	#windscale
 		font-size 1.5em
 		position fixed
-		bottom .5em
+		top 94%
+		left 88%
 	#icon, #windscale
 		vertical-align middle
 		float left
